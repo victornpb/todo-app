@@ -1,12 +1,20 @@
+require('dotenv').config();
 
-const express = require('express')
-const app = express()
-const port = 3000
+function checkEnvs(envs) {
+  for (const env of envs) {
+    if (!process.env[env]) {
+      throw `Missing environment variable '${env}'!`;
+    }
+  }
+}
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+checkEnvs([
+  "API_PORT",
+  "MONGODB_URI"
+]);
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+// Use testing server for integration tests
+// if (process.env.STAGING)
+//   process.env.MONGODB_URI = '';
+
+require('./server');
