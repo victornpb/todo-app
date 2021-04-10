@@ -1,0 +1,20 @@
+{
+  "name": "todo-api",
+  "version": "0.0.1",
+  "description": "The To-do application API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/victornpb",
+  "license": "UNLICENSED",
+  "private": "true",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}
