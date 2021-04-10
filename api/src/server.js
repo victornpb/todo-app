@@ -1,5 +1,6 @@
 
 const express = require('express');
+const explorer = require('express-explorer');
 
 const app = express();
 const port = process.env.API_PORT;
@@ -16,3 +17,5 @@ app.listen(port, () => {
 
 const projectController = require('./controller/projectController');
 projectController(app);
+
+app.use('/explorer', explorer({format: 'html'}));
