@@ -42,6 +42,13 @@ export default new Vuex.Store({
     getToken(state) {
       return state.loggedUser && state.loggedUser.token;
     },
+    
+    userName(state) {
+      return state.loggedUser && state.loggedUser.user.name;
+    },
+    userEmail(state) {
+      return state.loggedUser && state.loggedUser.user.email;
+    },
   },
   actions: {},
   modules: {},
