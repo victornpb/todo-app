@@ -13,15 +13,15 @@ module.exports = (app) => {
     newSchemaValidator({
       name: {
         required: true,
-        type: String,
+        type: 'string',
       },
       email: {
         required: true,
-        type: String,
+        type: 'string',
       },
       password: {
         required: true,
-        type: String,
+        type: 'string',
       },
     }),
     async (req, res) => {
@@ -66,7 +66,6 @@ module.exports = (app) => {
       email: {
         type: String,
         required: true,
-        test: /.+@.+/,
       },
       password: {
         type: String,
@@ -76,7 +75,7 @@ module.exports = (app) => {
     async (req, res) => {
       const { email, password } = req.body;
 
-      const user = await User.findOne({ email }).select('password');
+      const user = await User.findOne({ email });
       if (!user) {
         return res.status(404).send({
           error: 'USER_NOT_FOUND',
@@ -89,6 +88,10 @@ module.exports = (app) => {
         try {
           const token = await createToken(user.id);
           res.status(200).json({
+            user: {
+              ...user.toObject(),
+              password: undefined,
+            },
             token: token,
           });
         } catch (err) {

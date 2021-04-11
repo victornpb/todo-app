@@ -1,5 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
+const newSchemaValidator = require('../middleware/validator');
+const { Project } = require('../model/Project');
 const { Task, STATUS } = require('../model/Task');
 
 const namespace = '/tasks';
@@ -30,7 +32,7 @@ module.exports = (app) => {
 
   // create
   router.post(
-    '/:taskId',
+    '/:projectId',
     newSchemaValidator({
       description: {
         type: String,
@@ -44,19 +46,74 @@ module.exports = (app) => {
     }),
     async (req, res) => {
       const userId = req.userId;
+      const projectId = req.params.projectId;
       const { description, status } = req.body;
 
+      const project = await Project.findOne({
+        _id: projectId,
+        userId,
+      });
+
+      if (!project) {
+        return res.status(404).json({
+          code: 'PROJECT_NOT_FOUND',
+          message: 'You do not own a project with this ID',
+        });
+      }
+
       try {
-        const task = await Task.create({
+        const task = new Task({
           description: description,
           userId: userId,
+          projectId: projectId,
         });
 
+        project.tasks.push(task);
+        await project.save();
+
         res.status(201).send({
-          task: task.toJSON(),
+          ...task.toJSON(),
         });
       } catch (error) {
-        return res.status(500);
+        return res.status(500).send(error);
+      }
+    },
+  );
+
+
+  // update
+  router.put(
+    '/:projectId/:taskId',
+    newSchemaValidator({
+      description: {
+        type: String,
+        required: true,
+      },
+    }),
+    async (req, res) => {
+      const userId = req.userId;
+      const { projectId, taskId } = req.params;
+      const { description } = req.body;
+
+      const result = await Project.updateOne({
+        _id: projectId,
+        userId,
+        'tasks._id': taskId,
+        'task.$.status': TASK.TODO, // prevent modifying DONE taks
+      }, {
+        $set: {
+          'tasks.$.description': description
+        }
+      });
+
+      if (result.n === 1) {
+        res.status(204).end();
+      }
+      else {
+        res.status(401).json({
+          code: 'CANNOT_UPDATE_TASK',
+          message: 'Project or Task cannot be modified or does not exist',
+        });
       }
     },
   );
