@@ -20,14 +20,20 @@ module.exports = (app) => {
   });
 
   // create
-  router.post("/", async (req, res) => {
+  router.post('/', async (req, res) => {
+    const userId = req.userId;
+    const { name } = req.body;
+
     try {
       const project = await Project.create({
-        name: 'Untitled',
-        userId: '1',
+        name: name || 'Untitled',
+        userId: userId,
       });
   
-      res.send({ project });
+      res.send({
+        project: project.toJSON(),
+      });
+
     } catch (error) {
       return res.status(500);
     }
