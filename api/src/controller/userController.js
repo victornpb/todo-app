@@ -1,4 +1,5 @@
 const express = require('express');
+const Validator = require('schema-validator');
 const { User } = require('../model/User');
 
 const namespace = '/user';
@@ -7,7 +8,21 @@ module.exports = (app) => {
 
   const router = express.Router();
   
-  router.post('/register', async (req, res) => {
+  router.post('/register', [new Validator({
+    name: {
+      required: true,
+      type: String,
+    },
+    email: {
+      required: true,
+      type: String,
+      test: /.+@.+/,
+    },
+    password: {
+      required: true,
+      type: String,
+    },
+  }, true) ], async (req, res) => {
     console.log(req.body);
     const { name, email, password } = req.body;
 
