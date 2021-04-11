@@ -3,33 +3,45 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
+// This is just a quick solution, not meant to be used in production
+const persistence = {
+  read(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key));
+    } catch (err) {
+      void 0;
+    }
+    return undefined;
+  },
+  write(key, data) {
+    localStorage.setItem(key, JSON.stringify(data))
+  },
+  delete(key) {
+    localStorage.removeItem(key)
+  }
+}
+
 export default new Vuex.Store({
   state: {
-    loggedUser: null,
+    loggedUser: persistence.read('LoggedUser'),
   },
   mutations: {
     setLoggedUser(state, loggedUser) {
       state.loggedUser = loggedUser;
-      if (loggedUser) localStorage.setItem('LoggedUser', JSON.stringify(loggedUser));
-      else localStorage.removeItem('LoggedUser');
-    }
+      if (loggedUser) persistence.write('LoggedUser', state.loggedUser);
+      else persistence.delete('LoggedUser');
+    },
   },
   getters: {
     getLoggedUser(state) {
-      if (!state.loggedUser) {
-        // yeah, this is not the most elegant sollution
-        try {
-          state.loggedUser = JSON.parse(localStorage.getItem('LoggedUser'));
-        } catch (err) { }
-      }
-      return state.getters.loggedUser;
+      return state && state.loggedUser;
     },
     isLogged(state) {
-      return Boolean(state.loggedUser);
+      return Boolean(state && state.loggedUser);
     },
     getToken(state) {
       return state.loggedUser && state.loggedUser.token;
-    }
+    },
   },
   actions: {},
   modules: {},
