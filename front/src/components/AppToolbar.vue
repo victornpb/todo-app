@@ -10,7 +10,7 @@
   >
     <slot name="icon-toolbar" />
 
-    <v-toolbar-title style="width: 300px" class="--hidden-sm-and-down"> <v-icon>check</v-icon> To-do App </v-toolbar-title>
+    <v-toolbar-title style="width: 300px" class="--hidden-sm-and-down"> <v-icon>library_add_check</v-icon> To-do App </v-toolbar-title>
 
     <template slot="extension">
       <slot />

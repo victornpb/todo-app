@@ -9,7 +9,6 @@
             </v-card-title>
             <v-card-text>
               <v-form @submit.prevent="register()" v-model="valid" ref="form">
-
                 <v-text-field
                   type="text"
                   v-model="name"
@@ -48,30 +47,29 @@
 
                 <v-text-field
                   v-model="repeatPassword"
-                  
                   :rules="[rules.required, veriyPw]"
-                 
+                  type="password"
                   label="Repeat Password"
                   placeholder="Repeat Password"
                   name="password"
                   prepend-icon="lock"
                   autocomplete="current-password"
                 />
-                
+
                 <v-alert v-if="error" :value="true" type="error" dismissible>
-                  {{error}}
+                  {{ error }}
                 </v-alert>
 
                 <v-btn v-if="!created" :disabled="!valid" color="primary" type="submit" :loading="isLoading" block large>Create account</v-btn>
 
                 <v-alert v-model="created" type="success">
                   <h4>Your account has been created!</h4>
-                   Now please <router-link to="/login">Log in</router-link>
+                  Now please <router-link to="/login">Log in</router-link>
                 </v-alert>
-                <br>
+                <br />
                 <div class="text-center">
-                    or
-                    <router-link to="/login">Log in</router-link>
+                  or
+                  <router-link to="/login">Log in</router-link>
                 </div>
               </v-form>
             </v-card-text>
@@ -86,61 +84,58 @@
 // import AppBanner from '../components/AppBanner.vue';
 
 export default {
-    components:{
-        // AppBanner,
+  components: {
+    // AppBanner,
+  },
+  data() {
+    return {
+      isLoading: false,
+
+      uncloak: false,
+
+      name: '',
+      email: '',
+      password: '',
+      repeatPassword: '',
+
+      valid: false,
+      rules: {
+        required: (val) => (!val ? 'Cannot be empty' : true),
+        email: (val) => (!/.@./.test(val) ? 'Invalid email' : true),
+      },
+
+      created: null,
+
+      error: null,
+    };
+  },
+  methods: {
+    veriyPw() {
+      return this.password === this.repeatPassword ? true : 'Password does not match';
     },
-    data(){
-        return {
-            isLoading:false,
+    async register() {
+      this.error = null;
+      this.isLoading = true;
+      try {
+        const data = await this.$post('/user/register', {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+        });
 
-            uncloak: false,
-
-            name: '',
-            email: '',
-            password: '',
-            repeatPassword: '',
-
-            valid: false,
-            rules:{
-                required: val=>!val?'Cannot be empty':true,
-                email: val=>!/.@./.test(val)?'Invalid email':true,
-            },
-
-            created: null,
-
-            error: null,
-        };
+        this.created = data;
+        // this.$router.push('/login');
+      } catch (err) {
+        console.log('Unexpected error', { err: err });
+        this.error = err && err.response && err.response.data.message;
+      } finally {
+        this.isLoading = false;
+      }
     },
-    methods: {
-        veriyPw(){
-          return this.password === this.repeatPassword ? true : 'Password does not match' ;
-        },
-        async register() {
-            this.error = null;
-            this.isLoading = true;
-            try{
 
-                const data = await this.$post('/user/register', {
-                    name: this.email,
-                    email: this.email,
-                    password: this.password,
-                });
-                
-                this.created = data;
-                // this.$router.push('/login');
-
-            }catch(err){
-                console.log('Unexpected error', {err:err});
-                this.error = err && err.response && err.response.data.message;
-            }
-            finally{
-                this.isLoading = false;
-            }
-        },
-
-        setLoggedUser(user){
-            this.$store.commit('setLoggedUser', user);
-        }
-    }
-}
+    setLoggedUser(user) {
+      this.$store.commit('setLoggedUser', user);
+    },
+  },
+};
 </script>
