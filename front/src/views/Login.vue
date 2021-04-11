@@ -30,7 +30,6 @@
                   :append-icon="uncloak ? 'visibility_off' : 'visibility'"
                   :rules="[rules.required]"
                   :type="uncloak ? 'text' : 'password'"
-                  :error="incorretCredentials"
                   @click:append="uncloak = !uncloak"
                   label="Password"
                   placeholder="Password"
@@ -63,6 +62,11 @@ import AppBanner from '../components/AppBanner.vue';
 export default {
     components:{
         AppBanner,
+    },
+    mounted(){
+      // if the user is logged forword to the main page
+      if(this.$store.getters.isLogged)
+        this.$router.push('/');
     },
     data(){
         return {
