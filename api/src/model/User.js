@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const db = require('../database');
 const { hashPassword, testPassword } = require('../auth');
 
-
-
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -28,21 +26,25 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre('save', async function hashPassword(next) {
+UserSchema.pre('save', async function hashPasswordHook() {
   const user = this;
+
+  console.log('isNew', user.isNew, user);
 
   // only hash the password if it has been modified (or is new)
   if (user.isNew || user.isModified('password')) {
     // hash the password
-    user.password = await hashPassword(user.password, SALT_WORK_FACTOR);
+    user.password = await hashPassword(user.password);
+    // next();
   }
 
-  next();
 });
 
 UserSchema.methods.testPassword = async function testPassword(password) {
   return testPassword(this.password, password);
 };
+
+const User = db.model('User', UserSchema);
 
 module.exports = {
   UserSchema,
