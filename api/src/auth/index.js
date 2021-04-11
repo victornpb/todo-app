@@ -12,7 +12,7 @@ module.exports = {
    * @return {string} Hashed password
    */
   async hashPassword(password) {
-    await bcrypt.hash(password, SALT_WORK_FACTOR);
+    return await bcrypt.hash(password, SALT_WORK_FACTOR);
   },
 
   /**
