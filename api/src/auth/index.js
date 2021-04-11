@@ -56,6 +56,12 @@ module.exports = {
    * @return {userId|null} The userId or null if the token is invalid
    */
   async testToken(token) {
-    return; //TODO:
+    // promisified sign function
+    function jwtVerify(token, secret) {
+      return new Promise((resolve, reject) => {
+        jwt.verify(token, secret, (err, payload) => err ? reject(err) : resolve(payload));
+      });
+    }
+    return await jwtVerify(token, JWT_PRIVATE_KEY);
   },
 };
