@@ -3,15 +3,24 @@
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6 lg4>
         <v-card>
-          
-          <AppBanner/>
-
           <v-container>
             <v-card-title primary-title class="justify-center">
-              <h2 class="headline">Log in to continue</h2>
+              <h2 class="headline"><v-icon>person_add</v-icon> Register</h2>
             </v-card-title>
             <v-card-text>
-              <v-form @submit.prevent="login()" v-model="valid" ref="form">
+              <v-form @submit.prevent="register()" v-model="valid" ref="form">
+
+                <v-text-field
+                  type="text"
+                  v-model="name"
+                  :rules="[rules.required]"
+                  label="Name"
+                  placeholder="Name"
+                  name="name"
+                  prepend-icon="person"
+                  autocomplete="name"
+                  autofocus
+                />
 
                 <v-text-field
                   type="email"
@@ -22,7 +31,6 @@
                   name="username"
                   prepend-icon="email"
                   autocomplete="email"
-                  autofocus
                 />
 
                 <v-text-field
@@ -30,7 +38,6 @@
                   :append-icon="uncloak ? 'visibility_off' : 'visibility'"
                   :rules="[rules.required]"
                   :type="uncloak ? 'text' : 'password'"
-                  :error="incorretCredentials"
                   @click:append="uncloak = !uncloak"
                   label="Password"
                   placeholder="Password"
@@ -38,15 +45,33 @@
                   prepend-icon="lock"
                   autocomplete="current-password"
                 />
+
+                <v-text-field
+                  v-model="repeatPassword"
+                  
+                  :rules="[rules.required, veriyPw]"
+                 
+                  label="Repeat Password"
+                  placeholder="Repeat Password"
+                  name="password"
+                  prepend-icon="lock"
+                  autocomplete="current-password"
+                />
                 
-                <v-btn :disabled="!valid" color="primary" type="submit" :loading="isLoading" block large>Log In</v-btn>
                 <v-alert v-if="error" :value="true" type="error" dismissible>
                   {{error}}
+                </v-alert>
+
+                <v-btn v-if="!created" :disabled="!valid" color="primary" type="submit" :loading="isLoading" block large>Create account</v-btn>
+
+                <v-alert v-model="created" type="success">
+                  <h4>Your account has been created!</h4>
+                   Now please <router-link to="/login">Log in</router-link>
                 </v-alert>
                 <br>
                 <div class="text-center">
                     or
-                    <router-link to="/register">Register</router-link>
+                    <router-link to="/login">Log in</router-link>
                 </div>
               </v-form>
             </v-card-text>
@@ -57,12 +82,12 @@
   </v-container>
 </template>
 <script>
-import store from '@/store';
-import AppBanner from '../components/AppBanner.vue';
+// import store from '@/store';
+// import AppBanner from '../components/AppBanner.vue';
 
 export default {
     components:{
-        AppBanner,
+        // AppBanner,
     },
     data(){
         return {
@@ -70,52 +95,49 @@ export default {
 
             uncloak: false,
 
-            email:'',
+            name: '',
+            email: '',
             password: '',
+            repeatPassword: '',
 
             valid: false,
             rules:{
                 required: val=>!val?'Cannot be empty':true,
                 email: val=>!/.@./.test(val)?'Invalid email':true,
             },
+
+            created: null,
+
             error: null,
         };
     },
-    methods:{
-        async login(){
-            this.error = false;
+    methods: {
+        veriyPw(){
+          return this.password === this.repeatPassword ? true : 'Password does not match' ;
+        },
+        async register() {
+            this.error = null;
             this.isLoading = true;
             try{
 
-                const { data, status } = await this.$axios.post('/user/login', {
+                const data = await this.$post('/user/register', {
+                    name: this.email,
                     email: this.email,
                     password: this.password,
                 });
                 
-                if(status===404){
-                    this.incorretCredentials = 'User does not exist';
-                }
-                else if(status===401){
-                    this.incorretCredentials = 'Incorrect Password';
-                }
-                else if(status===200){
-                    this.setLoggedUser(data);
-                    this.$router.push('/board');
-                }
-                else {
-                    console.error('Unexpected error', status, data);
-                }
+                this.created = data;
+                // this.$router.push('/login');
+
             }catch(err){
-                console.log('Unexpected error', {err});
+                console.log('Unexpected error', {err:err});
                 this.error = err && err.response && err.response.data.message;
             }
             finally{
                 this.isLoading = false;
             }
         },
-        register(){
 
-        },
         setLoggedUser(user){
             this.$store.commit('setLoggedUser', user);
         }
