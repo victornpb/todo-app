@@ -60,6 +60,33 @@ module.exports = (app) => {
     }
   });
 
+
+  // update
+  router.put('/:projectId', async (req, res) => {
+    const userId = req.userId;
+    const { projectId } = req.params;
+    const { name } = req.body;
+
+    const patch = {
+      name: name,
+    };
+
+    const result = await Project.updateOne({
+      userId: userId,
+      _id: projectId,
+    }, patch);
+
+    if (result.n === 1) {
+      res.status(204).end();
+    }
+    else {
+      res.status(404).json({
+        code: 'NOT_FOUND',
+        message: 'Project does not exist',
+      });
+    }
+  });
+
   // register controller routes to app
   app.use(namespace, router);
 };
