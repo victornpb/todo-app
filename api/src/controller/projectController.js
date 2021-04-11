@@ -1,4 +1,5 @@
 const express = require('express');
+const authMiddleware = require('../middleware/auth');
 const { Project } = require('../model/Project');
 
 const namespace = '/projects';
@@ -6,10 +7,13 @@ const namespace = '/projects';
 module.exports = (app) => {
 
   const router = express.Router();
+  router.use(authMiddleware);
   
   // get
   router.get('/', async (req, res) => {
-    const projects = await Project.find();
+    const userId = req.body.userId;
+
+    const projects = await Project.find().where({userId: userId});
     return res.send({
       data: projects
     });
