@@ -1,6 +1,7 @@
 const express = require('express');
 const Validator = require('schema-validator');
 const { User } = require('../model/User');
+const { createToken, testToken } = require('../auth');
 
 const namespace = '/user';
 
@@ -23,7 +24,6 @@ module.exports = (app) => {
       type: String,
     },
   }, true) ], async (req, res) => {
-    console.log(req.body);
     const { name, email, password } = req.body;
 
     // Check if email already exists
@@ -33,8 +33,8 @@ module.exports = (app) => {
       return res
         .status(409)
         .json({
-          code: 'EMAIL_ALREADY_EXIST',
-          message: 'User with the email already exists'
+          error: 'USER_EXISTS',
+          message: 'A User with the provided email already exists'
         });
     }
 
@@ -53,7 +53,12 @@ module.exports = (app) => {
       });
     }
     catch (err) {
-      res.status(500).send(err);
+      console.error(err);
+      res.status(500).send({ err });
+    }
+
+  });
+
     }
 
   });
