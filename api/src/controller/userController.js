@@ -59,8 +59,48 @@ module.exports = (app) => {
 
   });
 
+  // login
+  router.post('/login', [new Validator({
+    email: {
+      type: String,
+      required: true,
+      test: /.+@.+/,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+  }, true)], async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email }).select('password');
+    if (!user) {
+      return res.status(404).send({
+        error: 'USER_NOT_FOUND',
+        message: 'User does not exist'
+      });
     }
 
+    const isPwCorrect = await user.testPassword(password);
+    if (isPwCorrect) {
+      try {
+        const token = await createToken(user.id);
+        res.status(200).json({
+          token: token,
+        });
+      }
+      catch (err) {
+        console.error('Error creating token', err);
+        res.status(500);
+      }
+
+    }
+    else {
+      res.status(401).json({
+        code: 'INVALID_PW',
+        message: 'Invalid password',
+      });
+    }
   });
 
   // register controller routes to app

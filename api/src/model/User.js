@@ -40,8 +40,8 @@ UserSchema.pre('save', async function hashPasswordHook() {
 
 });
 
-UserSchema.methods.testPassword = async function testPassword(password) {
-  return testPassword(this.password, password);
+UserSchema.methods.testPassword = async function testPasswordMethod(password) {
+  return await testPassword(this.password, password);
 };
 
 const User = db.model('User', UserSchema);

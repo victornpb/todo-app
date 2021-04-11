@@ -2,8 +2,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const SALT_WORK_FACTOR = 10;
-const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
+const JWT_PRIVATE_KEY = String(process.env.JWT_PRIVATE_KEY).replace(/\\n/gm, '\n');
 const TOKEN_EXPIRATION = '1d';
+
+
+
 
 module.exports = {
   /**
@@ -22,7 +25,7 @@ module.exports = {
    * @return {boolean} True when the password matches
    */
   async testPassword(hash, password) {
-    return bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, hash);
   },
 
   /**
@@ -31,11 +34,20 @@ module.exports = {
    * @return {type} {description}
    */
   async createToken(userId) {
+
+    // promisified sign function
+    function jwtSign(payload, secret, options) {
+      return new Promise((resolve, reject) => {
+        jwt.sign(payload, secret, options, (err, token) => err ? reject(err) : resolve(token));
+      });
+    }
+
     const payload = { userId: userId };
-    return await jwt.sign(payload, JWT_PRIVATE_KEY, {
-      algorithm: 'RS256',
+
+    return await jwtSign(payload, JWT_PRIVATE_KEY, {
+      // algorithm: 'RS256',
       expiresIn: TOKEN_EXPIRATION,
-    });
+    });  
   },
 
   /**
