@@ -1,5 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
+const newSchemaValidator = require('../middleware/validator');
 const { Project } = require('../model/Project');
 
 const namespace = '/projects';
@@ -20,7 +21,7 @@ module.exports = (app) => {
   });
 
   // create
-  router.post('/', async (req, res) => {
+  router.post('/', newSchemaValidator({ name: {type: String, required: false }}), async (req, res) => {
     const userId = req.userId;
     const { name } = req.body;
 
@@ -39,7 +40,7 @@ module.exports = (app) => {
     }
   });
 
-  // get
+  // delete
   router.delete('/:projectId', async (req, res) => {
     const userId = req.userId;
     const { projectId } = req.params;
@@ -62,7 +63,7 @@ module.exports = (app) => {
 
 
   // update
-  router.put('/:projectId', async (req, res) => {
+  router.put('/:projectId', newSchemaValidator({ name: {type: String, required: true}}), async (req, res) => {
     const userId = req.userId;
     const { projectId } = req.params;
     const { name } = req.body;
