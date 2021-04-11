@@ -4,17 +4,19 @@
   "description": "The To-do application API",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "github.com/victornpb",
   "license": "UNLICENSED",
   "private": "true",
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "bcrypt": "^5.0.1",
+    "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "express-explorer": "^0.4.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.3",
     "schema-validator": "^3.3.1"
   },
