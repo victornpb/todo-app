@@ -32,4 +32,5 @@ const Task = db.model('Task', TaskSchema);
 module.exports = {
   TaskSchema,
   Task,
+  STATUS,
 };
