@@ -11,7 +11,7 @@ module.exports = (app) => {
   
   // get
   router.get('/', async (req, res) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
 
     const projects = await Project.find().where({userId: userId});
     return res.send({

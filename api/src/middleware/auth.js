@@ -10,7 +10,7 @@ async function authMiddleware(req, res, next) {
     const payload = await testToken(token);
     if (token && payload) {
       // inject userId on
-      req.body.userId = payload.userId;
+      req.userId = payload.userId;
       next();
     } else {
       throw 'Invalid Auth';
