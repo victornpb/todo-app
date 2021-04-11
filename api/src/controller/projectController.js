@@ -30,12 +30,33 @@ module.exports = (app) => {
         userId: userId,
       });
   
-      res.send({
+      res.status(201).send({
         project: project.toJSON(),
       });
 
     } catch (error) {
       return res.status(500);
+    }
+  });
+
+  // get
+  router.delete('/:projectId', async (req, res) => {
+    const userId = req.userId;
+    const { projectId } = req.params;
+
+    const result = await Project.deleteOne({
+      userId: userId,
+      _id: projectId,
+    });
+
+    if (result.deletedCount === 1) {
+      res.status(204).end();
+    }
+    else {
+      res.status(404).json({
+        code: 'NOT_FOUND',
+        message: 'Project does not exist',
+      });
     }
   });
 
