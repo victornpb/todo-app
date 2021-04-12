@@ -10,14 +10,23 @@
       </v-expansion-panel-header>
       <v-expansion-panel-content>
         <v-card>
+          <v-btn @click="deleteProject">Delete</v-btn>
           <v-alert :value="error" type="error" dismissible>
             <div>{{ error }}</div>
           </v-alert>
 
-          <v-btn @click="deleteProject">Delete</v-btn>
-          <ul>
-            <li v-for="task in data.tasks" :key="task._id">Task: {{ task }}</li>
-          </ul>
+          <v-list
+                subheader
+                >
+                <v-subheader>To do</v-subheader>
+                <template v-for="task in tasksTodo" >
+                    <Task :projectId="data._id" :value="task" :key="task._id" />
+                </template>
+                <v-subheader>Done</v-subheader>
+                <template v-for="task in tasksDone" >
+                    <Task :projectId="data._id" :value="task" :key="task._id" />
+                </template>
+          </v-list>
 
           <v-form @submit.prevent="addNewTask()">
             Add task
@@ -33,10 +42,12 @@
 </template>
 <script>
 import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
+import Task from '@/components/Task.vue';
 
 export default {
   components: {
     DeleteProjectDialog,
+    Task,
   },
   props: {
     value: Object,
@@ -61,6 +72,13 @@ export default {
     length() {
       return this.data && this.data.tasks ? this.data.tasks.length : 0;
     },
+
+    tasksTodo(){
+        return this.data && this.data.tasks ? this.data.tasks.filter((task) => !task.status) : []; 
+    },
+    tasksDone(){
+        return this.data && this.data.tasks ? this.data.tasks.filter((task) => task.status) : []; 
+    }
   },
   methods: {
     async saveProject() {
