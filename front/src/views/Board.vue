@@ -1,13 +1,16 @@
 <template>
   <div>
     <AppToolbar/>
-    <h1>This is an about page</h1>
     <v-content>
-     
+      <v-container fill-height fluid>
         <v-btn large @click="createProject" ><v-icon>add</v-icon> New project </v-btn>
+        <v-layout wrap>
+          <v-flex v-for="project in projects.data" v-bind:key="project._id" xs12 sm12 md6 lg4 xl3 class="pa-2">
+            <Project :value="project"  @deleted="fetchProjects" />
+          </v-flex>
+        </v-layout>
 
-        <Project :value="project" v-for="project in projects.data.data" v-bind:key="project._id" @deleted="fetchProjects" />
-
+      </v-container>
     </v-content>
   </div>
 </template>
@@ -24,7 +27,7 @@ export default {
     return {
       projects: {
         isLoading: false,
-        data: null,
+        data: [],
       },
     };
   },
@@ -37,7 +40,8 @@ export default {
   methods:{
     async fetchProjects(){
       this.projects.isLoading = true;
-      this.projects.data = await this.$get('/projects');
+      const projects = await this.$get('/projects');
+      this.projects.data = projects.data;
       this.projects.isLoading = false;
     },
 
