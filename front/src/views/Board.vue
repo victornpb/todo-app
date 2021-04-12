@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg" style="min-height:100%;">
     <AppToolbar/>
     <v-main>
       <v-container fill-height fluid>

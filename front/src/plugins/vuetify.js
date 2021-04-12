@@ -20,7 +20,9 @@ export default new Vuetify({
         muted: colors.grey.base,
 
         bg: '#f3f3f6',
-        deletehover: '##fed7d7',
+        subtleerror: '#fed7d7',
+
+        foobar: '#663399',
       },
       dark: {
         primary: '#170f4f',
@@ -32,12 +34,14 @@ export default new Vuetify({
         success: '#e3d900',
         muted: colors.grey.base,
 
-        bg: colors.grey.darken2,
-        deletehover: '##fed7d7',
+        bg: colors.grey.darken4,
+        subtleerror: '#3d2929',
+
+        foobar: '#663399',
       },
     },
-  },
-  options: {
-    customProperties: true,
+    options: {
+      customProperties: true,
+    },
   },
 });

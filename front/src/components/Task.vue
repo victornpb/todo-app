@@ -1,5 +1,5 @@
 <template>
-  <v-list-item :class="{ deletehover: confirmDelete }">
+  <v-list-item :class="{ subtleerror: confirmDelete }">
     <!-- Editable task -->
     <template v-if="!isDone">
       <v-list-item-action>
