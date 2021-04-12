@@ -40,7 +40,7 @@ module.exports = (app) => {
       },
       status: {
         type: String,
-        enum : [STATUS.TODO, STATUS.DONE],
+        enum: [STATUS.TODO, STATUS.DONE],
         required: false,
       },
     }),
@@ -80,11 +80,14 @@ module.exports = (app) => {
     },
   );
 
-
   // update
   router.put(
     '/:projectId/:taskId',
     newSchemaValidator({
+      status: {
+        required: false,
+        enum: [STATUS.TODO, STATUS.DONE],
+      },
       description: {
         type: String,
         required: true,
@@ -93,28 +96,47 @@ module.exports = (app) => {
     async (req, res) => {
       const userId = req.userId;
       const { projectId, taskId } = req.params;
-      const { description } = req.body;
+      const { status, description } = req.body;
 
-      const result = await Project.updateOne({
+      const project = await Project.findOne({
         _id: projectId,
         userId,
-        'tasks._id': taskId,
-        'task.$.status': TASK.TODO, // prevent modifying DONE taks
-      }, {
-        $set: {
-          'tasks.$.description': description
-        }
       });
 
-      if (result.n === 1) {
-        res.status(204).end();
-      }
-      else {
-        res.status(401).json({
-          code: 'CANNOT_UPDATE_TASK',
-          message: 'Project or Task cannot be modified or does not exist',
+      if (!project) {
+        return res.status(404).json({
+          code: 'PROJECT_NOT_FOUND',
+          message: 'You do not own a project with this id',
         });
       }
+
+      const task = project.tasks.find((task) => task.id === taskId);
+      if (!task) {
+        return res.status(404).json({
+          code: 'TASK_NOT_FOUND',
+          message: 'This project does not contain a task with this id',
+        });
+      }
+
+      if (task.status === STATUS.DONE) {
+        return res.status(403).json({
+          code: 'UPDATE_NOT_ALLOWED',
+          message: 'Updating a completed task is not allowed',
+        });
+      }
+
+      if (status === STATUS.DONE) {
+        task.finished = new Date();
+        task.status = status;
+      }
+      
+      task.description = description || task.description;
+
+      await project.save();
+
+      res.status(200).json({
+        ...task.toObject(),
+      });
     },
   );
 
@@ -139,43 +161,46 @@ module.exports = (app) => {
   });
 
   // update
-  router.put('/:taskId', newSchemaValidator({
-    description: {
-      type: String,
-      required: false,
-    },
-    status: {
-      type: String,
-      enum : [STATUS.TODO, STATUS.DONE],
-      required: false,
-    },
-  }),
-  async (req, res) => {
-    const userId = req.userId;
-    const { taskId } = req.params;
-    const { description, status } = req.body;
-
-    const patch = {
-      name: name,
-    };
-
-    const result = await Task.updateOne(
-      {
-        userId: userId,
-        _id: taskId,
+  router.put(
+    '/:taskId',
+    newSchemaValidator({
+      description: {
+        type: String,
+        required: false,
       },
-      patch,
-    );
+      status: {
+        type: String,
+        enum: [STATUS.TODO, STATUS.DONE],
+        required: false,
+      },
+    }),
+    async (req, res) => {
+      const userId = req.userId;
+      const { taskId } = req.params;
+      const { description, status } = req.body;
 
-    if (result.n === 1) {
-      res.status(204).end();
-    } else {
-      res.status(404).json({
-        code: 'NOT_FOUND',
-        message: 'Task does not exist',
-      });
-    }
-  });
+      const patch = {
+        name: name,
+      };
+
+      const result = await Task.updateOne(
+        {
+          userId: userId,
+          _id: taskId,
+        },
+        patch,
+      );
+
+      if (result.n === 1) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({
+          code: 'NOT_FOUND',
+          message: 'Task does not exist',
+        });
+      }
+    },
+  );
 
   // register controller routes to app
   app.use(namespace, router);
