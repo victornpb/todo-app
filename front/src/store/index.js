@@ -14,12 +14,12 @@ const persistence = {
     return undefined;
   },
   write(key, data) {
-    localStorage.setItem(key, JSON.stringify(data))
+    localStorage.setItem(key, JSON.stringify(data));
   },
   delete(key) {
-    localStorage.removeItem(key)
-  }
-}
+    localStorage.removeItem(key);
+  },
+};
 
 export default new Vuex.Store({
   state: {
@@ -49,7 +49,7 @@ export default new Vuex.Store({
     getToken(state) {
       return state.loggedUser && state.loggedUser.token;
     },
-    
+
     userName(state) {
       return state.loggedUser && state.loggedUser.user.name;
     },

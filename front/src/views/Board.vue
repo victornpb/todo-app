@@ -6,7 +6,7 @@
 
         <v-row class="pa-2">
           <v-spacer/>
-          <v-btn @click="createProject" color="accent" large><v-icon>add</v-icon> New project </v-btn>
+          <v-btn @click="createProject()" color="accent" large><v-icon>add</v-icon> New project </v-btn>
         </v-row>
 
         <!-- Projects -->
