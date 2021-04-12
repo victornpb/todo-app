@@ -3,8 +3,8 @@ const db = require('../database');
 
 // maybe this can be expanded to have other statuses?
 const STATUS = {
-    TODO: 0,
-    DONE: 7,
+  TODO: 0,
+  DONE: 7,
 };
 
 const TaskSchema = new mongoose.Schema({
@@ -14,7 +14,7 @@ const TaskSchema = new mongoose.Schema({
   },
   status: {
     type: Number,
-    enum : [STATUS.TODO, STATUS.DONE],
+    enum: [STATUS.TODO, STATUS.DONE],
     default: STATUS.TODO,
   },
   created: {
