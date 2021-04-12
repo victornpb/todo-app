@@ -1,6 +1,9 @@
 To-do App
 ===========
 
+![Untitled 2021-04-12 05_12_12](https://user-images.githubusercontent.com/3372598/114363332-aac93700-9b4e-11eb-84e9-7c1b6ca33e9e.gif)
+![2021-04-12 05-15-13 2021-04-12 05_18_04](https://user-images.githubusercontent.com/3372598/114363339-abfa6400-9b4e-11eb-9c5a-341c20c3ee55.gif)
+
 This is a [mono repository](https://en.wikipedia.org/wiki/Monorepo) containing
 - [Database](./db) - A mongodb container
 - [API](./api) - An API build with NodeJS and Express
