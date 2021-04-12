@@ -78,7 +78,7 @@ module.exports = (app) => {
     }, patch);
 
     if (result.n === 1) {
-      res.status(204).end();
+      res.status(204).send();
     }
     else {
       res.status(404).json({
