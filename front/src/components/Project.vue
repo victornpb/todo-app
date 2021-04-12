@@ -1,24 +1,33 @@
 <template>
   <v-expansion-panels focusable>
     <v-expansion-panel>
+      <!-- Project heading -->
       <v-expansion-panel-header>
-        <!-- {{ data.name }} -->
         <v-layout>
           <v-text-field v-model="data.name" @change="saveProject" :loading="isLoading" label="Project" hide-details />
           <span class="headline" style="line-height: 48px">{{ completed }}/{{ length }}</span>
         </v-layout>
-        <v-progress-linear :value="(completed / length) * 100" :disabled="!length" class="progress"></v-progress-linear>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content class="pa-0">
-        <v-btn @click="deleteProject">Delete</v-btn>
         <v-alert :value="error" type="error" dismissible>
           <div>{{ error }}</div>
         </v-alert>
-
+        <v-progress-linear :value="(completed / length) * 100" :disabled="!length" class="progress"></v-progress-linear>
+      </v-expansion-panel-header>
+      
+      <!-- Project Body -->
+      <v-expansion-panel-content class="pa-0">
+        
+        <!-- Delete project row -->
+        <div class="pa-1 text-right">
+          <v-btn @click="deleteProject" color="error" text>
+            <v-icon>delete</v-icon>
+            Delete Project</v-btn>
+        </div>
+      
+        <!-- Task List -->
         <v-list v-if="!isEmpty" subheader>
           <v-subheader>To do</v-subheader>
           <template v-for="task in tasksTodo">
-            <Task :projectId="data._id" :value="task" :key="task._id" @deleted="taskDeleted(task)" />
+            <Task :projectId="data._id" :value="task" :key="task._id" @deleted="getProject()" @completed="getProject()" />
           </template>
           <v-subheader>Done</v-subheader>
           <template v-for="task in tasksDone">
@@ -26,6 +35,7 @@
           </template>
         </v-list>
 
+        <!-- Empty State -->
         <v-card v-if="isEmpty" elevation="0">
           <v-card-text class="pa-4 text-center">
             <v-icon size="96" style="opacity: 0.25">inbox</v-icon>
@@ -35,14 +45,17 @@
           </v-card-text>
         </v-card>
 
-        <v-card>
+        <v-divider/>
+        
+        <!-- Add Task -->
+        <v-card class="pa-5">
           <v-form @submit.prevent="addNewTask()">
-            <v-text-field v-model="newTaskDescription" :loading="isLoading" label="Add new task" outlined />
-            <v-btn :disabled="!newTaskDescription" type="submit">Add Task</v-btn>
+            <v-text-field v-model="newTaskDescription" :loading="isLoading" label="Add new task" outlined @click:append="addNewTask()" append-icon="add" hide-details />
           </v-form>
         </v-card>
-
+        
         <DeleteProjectDialog v-if="deleteProjectDialog" v-model="deleteProjectDialog" @changed="$emit('deleted')" />
+
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
@@ -92,6 +105,20 @@ export default {
     },
   },
   methods: {
+
+    async getProject() {
+      this.error = null;
+      this.isLoading = true;
+      try {
+        const project = await this.$get('/projects/' + this.data._id);
+        this.data = project;
+      } catch (err) {
+        this.error = err && err.response && err.response.data.message;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
     async saveProject() {
       this.error = null;
       this.isLoading = true;
@@ -126,11 +153,6 @@ export default {
     deleteProject() {
       this.deleteProjectDialog = this.value;
     },
-
-    taskDeleted(task) {
-      const index = this.data.tasks.indexOf(task);
-      this.data.tasks.splice(index, 1);
-    },
   },
 };
 </script>
@@ -140,7 +162,10 @@ export default {
   top: 0px;
   left: 0px;
 }
-.v-expansion-panel-content__wrap{
-  padding:0;
+</style>
+
+<style>
+.pa-0 .v-expansion-panel-content__wrap{
+  padding: 0 !important;
 }
 </style>
