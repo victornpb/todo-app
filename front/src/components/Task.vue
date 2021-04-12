@@ -18,7 +18,7 @@
       <v-list-item-action v-else>
         <v-row>
           <v-btn @click="confirmDelete = false" color=""  text>Cancel</v-btn>
-          <v-btn @click="deleteTask()" color="error" text>Remove</v-btn>
+          <v-btn @click="deleteTask()" color="error" dark>Remove</v-btn>
         </v-row>
       </v-list-item-action>
     </template>
