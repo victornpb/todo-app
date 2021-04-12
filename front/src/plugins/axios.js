@@ -15,7 +15,7 @@ Vue.use(VueAxios, {
     // this function shows how to add Authorization header to requests
     beforeRequest(config, axiosInstance) {
       // your auth token
-      const token = store.getToken;
+      const token = store.getters.getToken;
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
