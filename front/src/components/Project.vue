@@ -19,8 +19,8 @@
                 subheader
                 >
                 <v-subheader>To do</v-subheader>
-                <template v-for="task in tasksTodo" >
-                    <Task :projectId="data._id" :value="task" :key="task._id" />
+            <template v-for="task in tasksTodo">
+              <Task :projectId="data._id" :value="task" :key="task._id" @deleted="taskDeleted(task)" />
                 </template>
                 <v-subheader>Done</v-subheader>
                 <template v-for="task in tasksDone" >
@@ -115,6 +115,11 @@ export default {
     deleteProject() {
       this.deleteProjectDialog = this.value;
     },
+
+    taskDeleted(task) {
+      const index = this.data.tasks.indexOf(task);
+      this.data.tasks.splice(index, 1);
+    }
   },
 };
 </script>

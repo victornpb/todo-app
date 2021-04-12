@@ -1,14 +1,13 @@
 <template>
   <v-list-item :class="{ red: confirmDelete }">
+      <!-- Editable task -->
     <template v-if="!isDone">
       <v-list-item-action>
         <v-checkbox @click="check()" :input-value="data.status" :disabled="data.status" :loading="isLoading"></v-checkbox>
       </v-list-item-action>
-
       <v-list-item-content>
         <v-list-item-title><v-text-field v-model="data.description" @change="updateTask()" hide-details /></v-list-item-title>
       </v-list-item-content>
-
       <v-list-item-action v-if="!confirmDelete">
         <v-btn @click="confirmDelete = true" icon color="error"><v-icon small>remove_circle</v-icon></v-btn>
       </v-list-item-action>
@@ -17,15 +16,14 @@
         <v-btn @click="deleteTask()" color="" outlined>Remove</v-btn>
       </v-list-item-action>
     </template>
+    <!-- Readonly task -->
     <template v-else>
       <v-list-item-action>
         <v-checkbox :input-value="data.status" :disabled="data.status" :loading="isLoading"></v-checkbox>
       </v-list-item-action>
-
       <v-list-item-content>
-        <v-list-item-title><v-text-field v-model="data.description" hide-details readonly /></v-list-item-title>
+        <v-list-item-title><v-text-field v-model="data.description" placeholder="Untitled task" hide-details readonly /></v-list-item-title>
       </v-list-item-content>
-
       <v-list-item-action>
         <v-btn :title="data.finished"><v-icon>info</v-icon></v-btn>
       </v-list-item-action>
@@ -62,10 +60,10 @@ export default {
   },
   methods: {
     check() {
-        if(this.data.status===STATUS.TODO){
-            this.data.status=STATUS.DONE;
-            this.updateTask();
-        }
+      if (this.data.status === STATUS.TODO) {
+        this.data.status = STATUS.DONE;
+        this.updateTask();
+      }
     },
     async updateTask() {
       this.error = null;
@@ -86,14 +84,13 @@ export default {
       this.error = null;
       this.isLoading = true;
       try {
-        const task = await this.$put(`/tasks/${this.projectId}/${this.data._id}`, {
-          status: STATUS.DONE,
-        });
-        this.data = task;
+        const task = await this.$delete(`/tasks/${this.projectId}/${this.data._id}`);
       } catch (err) {
         this.error = err && err.response && err.response.data.message;
       } finally {
         this.isLoading = false;
+        this.confirmDelete = false;
+        this.$emit('deleted');
       }
     },
   },
