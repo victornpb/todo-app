@@ -23,6 +23,7 @@ const persistence = {
 
 export default new Vuex.Store({
   state: {
+    darkMode: false,
     loggedUser: persistence.read('LoggedUser'),
   },
   mutations: {
@@ -31,8 +32,14 @@ export default new Vuex.Store({
       if (loggedUser) persistence.write('LoggedUser', state.loggedUser);
       else persistence.delete('LoggedUser');
     },
+    setDarkMode(state, bool) {
+      state.darkMode = bool;
+    },
   },
   getters: {
+    isDarkMode(state) {
+      return state.darkMode;
+    },
     getLoggedUser(state) {
       return state && state.loggedUser;
     },

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height class="">
+  <v-container fluid fill-height class="bg">
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6 lg4>
         <v-card>
@@ -19,6 +19,7 @@
                   prepend-icon="person"
                   autocomplete="name"
                   autofocus
+                  outlined
                 />
 
                 <v-text-field
@@ -30,6 +31,7 @@
                   name="username"
                   prepend-icon="email"
                   autocomplete="email"
+                  outlined
                 />
 
                 <v-text-field
@@ -43,17 +45,19 @@
                   name="password"
                   prepend-icon="lock"
                   autocomplete="current-password"
+                  outlined
                 />
 
                 <v-text-field
                   v-model="repeatPassword"
                   :rules="[rules.required, veriyPw]"
-                  type="password"
+                  :type="uncloak ? 'text' : 'password'"
                   label="Repeat Password"
                   placeholder="Repeat Password"
                   name="password"
                   prepend-icon="lock"
                   autocomplete="current-password"
+                  outlined
                 />
 
                 <v-alert v-if="error" :value="true" type="error" dismissible>

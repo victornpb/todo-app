@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height class="">
+  <v-container fluid fill-height class="bg">
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6 lg4>
         <v-card>
@@ -23,6 +23,7 @@
                   prepend-icon="email"
                   autocomplete="email"
                   autofocus
+                  outlined
                 />
 
                 <v-text-field
@@ -36,6 +37,7 @@
                   name="password"
                   prepend-icon="lock"
                   autocomplete="current-password"
+                  outlined
                 />
                 
                 <v-btn :disabled="!valid" color="primary" type="submit" :loading="isLoading" block large>Log In</v-btn>

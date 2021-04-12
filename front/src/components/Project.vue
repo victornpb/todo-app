@@ -10,7 +10,7 @@
         <v-alert :value="error" type="error" dismissible>
           <div>{{ error }}</div>
         </v-alert>
-        <v-progress-linear :value="(completed / length) * 100" :disabled="!length" class="progress"></v-progress-linear>
+        <v-progress-linear :value="(completed / length) * 100" :disabled="!length" class="progress" color="accent"></v-progress-linear>
       </v-expansion-panel-header>
       
       <!-- Project Body -->

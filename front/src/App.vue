@@ -1,5 +1,5 @@
 <template>
-  <v-app style="background: #f3f3f6;">
+  <v-app class="bg" :dark="darkMode">
     <router-view></router-view>
   </v-app>
 </template>
@@ -15,7 +15,14 @@ export default {
   },
 
   computed: {
-
+    darkMode: {
+      get () {
+        return this.$store.getters.isDarkMode;
+      },
+      set (value) {
+        this.$store.commit('setDarkMode', value);
+      }
+    },
   },
 
   data: () => ({

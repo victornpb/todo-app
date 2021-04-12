@@ -1,7 +1,7 @@
 <template>
   <div>
     <AppToolbar/>
-    <v-content>
+    <v-main>
       <v-container fill-height fluid>
 
         <v-row class="pa-2">
@@ -31,7 +31,7 @@
         </v-container>
 
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar
+  <v-app-bar
     :class="classes"
     :color="colorName"
     :absolute="position !== 'fixed' ? true : undefined"
@@ -40,9 +40,8 @@
         </v-list-item>
 
         <v-list-item>
-          <v-checkbox v-model="darkmode" color="primary"></v-checkbox>
-
           <v-list-item-title class="pl-3"> Dark mode </v-list-item-title>
+          <v-switch v-model="$vuetify.theme.dark" color="accent"></v-switch>
         </v-list-item>
 
         <v-divider></v-divider>
@@ -53,7 +52,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
@@ -88,6 +87,15 @@ export default {
     gravatarUrl() {
       const hash = md5(String(this.$store.getters.userEmail).toLowerCase()).toLowerCase();
       return `https://www.gravatar.com/avatar/${hash}?s=200&d=mp&r=g`;
+    },
+
+    darkMode: {
+      get () {
+        return this.$store.getters.isDarkMode;
+      },
+      set (value) {
+        this.$store.commit('setDarkMode', value);
+      }
     },
   },
 
