@@ -28,11 +28,7 @@ module.exports = (app) => {
       const { name, email, password } = req.body;
 
       // Check if email already exists
-      if (
-        await User.findOne({
-          email,
-        })
-      ) {
+      if (await User.findOne({ email })) {
         return res.status(409).json({
           error: 'USER_EXISTS',
           message: 'A User with the provided email already exists',
@@ -42,7 +38,7 @@ module.exports = (app) => {
       const user = {
         name,
         email,
-        password, // TODO: hash it
+        password, // hashed by the model
       };
 
       try {
@@ -50,13 +46,13 @@ module.exports = (app) => {
 
         return res.json({
           ...result.toJSON(),
-          password: undefined,
+          password: undefined, // redact hash from response
         });
       } catch (err) {
-        console.error(err);
-        res.status(500).send({ err });
+        console.error({ err });
+        res.status(500).send();
       }
-    }
+    },
   );
 
   // login
@@ -90,13 +86,13 @@ module.exports = (app) => {
           res.status(200).json({
             user: {
               ...user.toObject(),
-              password: undefined,
+              password: undefined, // redact hash from response
             },
             token: token,
           });
         } catch (err) {
-          console.error('Error creating token', err);
-          res.status(500);
+          console.error('Error creating token', { err });
+          res.status(500).send();
         }
       } else {
         res.status(401).json({
@@ -104,7 +100,7 @@ module.exports = (app) => {
           message: 'Invalid password',
         });
       }
-    }
+    },
   );
 
   // register controller routes to app

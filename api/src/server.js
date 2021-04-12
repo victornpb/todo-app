@@ -1,9 +1,8 @@
-
 const express = require('express');
 const explorer = require('express-explorer');
 const cors = require('cors');
 const db = require('./database');
- 
+
 const app = express();
 const port = process.env.API_PORT;
 
@@ -26,9 +25,8 @@ projectController(app);
 const taskController = require('./controller/taskController');
 taskController(app);
 
-
-app.use('/explorer', explorer({format: 'html'}));
+app.use('/explorer', explorer({ format: 'html' }));
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});

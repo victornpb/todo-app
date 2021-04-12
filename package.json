@@ -1,13 +1,17 @@
 {
   "name": "todo",
   "version": "1.0.0",
-  "description": "",
+  "description": "A To-do app",
   "main": "index.js",
   "scripts": {
     "db:dev":"db/start.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "victornpb",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/victornpb/todo-app.git"
+  },
   "license": "UNLICENSED",
-  "private":true
+  "private": true
 }

@@ -10,7 +10,7 @@ module.exports = (app) => {
   const router = express.Router();
   router.use(authMiddleware);
 
-  // create
+  // create task
   router.post(
     '/:projectId',
     newSchemaValidator({
@@ -60,7 +60,7 @@ module.exports = (app) => {
     },
   );
 
-  // update
+  // update task
   router.put(
     '/:projectId/:taskId',
     newSchemaValidator({
@@ -120,7 +120,7 @@ module.exports = (app) => {
     },
   );
 
-  // delete
+  // delete task
   router.delete('/:projectId/:taskId', async (req, res) => {
     const userId = req.userId;
     const { projectId, taskId } = req.params;

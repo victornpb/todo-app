@@ -37,7 +37,6 @@ UserSchema.pre('save', async function hashPasswordHook() {
     user.password = await hashPassword(user.password);
     // next();
   }
-
 });
 
 UserSchema.methods.testPassword = async function testPasswordMethod(password) {
