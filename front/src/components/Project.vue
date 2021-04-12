@@ -13,6 +13,13 @@
                Task: {{task}}
             </li>
         </ul>
+
+        <v-form @submit.prevent="addNewTask()">
+            Add task
+            <v-text-field v-model="newTaskDescription" :loading="isLoading" />
+            <v-btn :disabled="!newTaskDescription" type="submit">Add Task</v-btn>
+        </v-form>
+
         <DeleteProjectDialog v-if="deleteProjectDialog" v-model="deleteProjectDialog" @changed="$emit('deleted')" />
     </v-card>
 </template>
@@ -32,6 +39,8 @@ export default {
       data: null,
       error: null,
       deleteProjectDialog: null,
+
+      newTaskDescription: null,
     };
   },
   mounted() {
@@ -46,6 +55,24 @@ export default {
         await this.$put('/projects/' + this.data._id, {
             name: this.data.name || 'Untitled Project',
         });
+      } catch (err) {
+        this.error = err && err.response && err.response.data.message;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async addNewTask() {
+      if(!this.newTaskDescription) return;
+
+      this.error = null;
+      this.isLoading = true;
+      try {
+        const task = await this.$post('/tasks/' + this.data._id, {
+            description: this.newTaskDescription,
+        });
+        this.data.tasks.push(task);
+        this.newTaskDescription = ''; // clear input
       } catch (err) {
         this.error = err && err.response && err.response.data.message;
       } finally {
