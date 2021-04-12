@@ -31,11 +31,16 @@ Vue.use(VueAxios, {
         // backend error
         // shows response error
         // alert(error.response.data.message);
+        if (response.data.code === 'UNAUTHORIZED') {
+          console.log('Intercepted expired token', response);
+          store.commit('setLoggedUser', null);
+          location.hash = '/login'; // navigate away to login
+        }
+
       } else if (message) {
         // network error
         // alert(message);
       }
-
       // return Promise.reject(error)
     },
   },
