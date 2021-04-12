@@ -66,13 +66,13 @@
 
                 <v-btn v-if="!created" :disabled="!valid" color="primary" type="submit" :loading="isLoading" block large>Create account</v-btn>
 
-                <v-alert v-model="created" type="success">
+                <v-alert v-model="created" color="accent" icon="person_pin">
                   <h4>Your account has been created!</h4>
                   Now please <router-link to="/login">Log in</router-link>
                 </v-alert>
                 <br />
                 <div class="text-center">
-                  or
+                  Already have an account?
                   <router-link to="/login">Log in</router-link>
                 </div>
               </v-form>
