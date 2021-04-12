@@ -4,38 +4,39 @@
       <v-expansion-panel-header>
         <!-- {{ data.name }} -->
         <v-layout>
-          <v-text-field v-model="data.name" @change="saveProject" :loading="isLoading" hide-details />
-          <span class="headline">{{completed}}/{{length}}</span>
+          <v-text-field v-model="data.name" @change="saveProject" :loading="isLoading" label="Project" hide-details />
+          <span class="headline" style="line-height: 48px;">{{ completed }}/{{ length }}</span>
         </v-layout>
+        <v-progress-linear :value="completed/length*100" :disabled="!length" class="progress"></v-progress-linear>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
-        <v-card>
+     
           <v-btn @click="deleteProject">Delete</v-btn>
           <v-alert :value="error" type="error" dismissible>
             <div>{{ error }}</div>
           </v-alert>
 
-          <v-list
-                subheader
-                >
-                <v-subheader>To do</v-subheader>
+          <v-list subheader>
+            <v-subheader>To do</v-subheader>
             <template v-for="task in tasksTodo">
               <Task :projectId="data._id" :value="task" :key="task._id" @deleted="taskDeleted(task)" />
-                </template>
-                <v-subheader>Done</v-subheader>
-                <template v-for="task in tasksDone" >
-                    <Task :projectId="data._id" :value="task" :key="task._id" />
-                </template>
+            </template>
+            <v-subheader>Done</v-subheader>
+            <template v-for="task in tasksDone">
+              <Task :projectId="data._id" :value="task" :key="task._id" />
+            </template>
           </v-list>
 
-          <v-form @submit.prevent="addNewTask()">
-            Add task
-            <v-text-field v-model="newTaskDescription" :loading="isLoading" />
-            <v-btn :disabled="!newTaskDescription" type="submit">Add Task</v-btn>
-          </v-form>
+          <v-card>
+            <v-form @submit.prevent="addNewTask()">
+              <v-text-field v-model="newTaskDescription" :loading="isLoading" label="Add new task" outlined />
+              <v-btn :disabled="!newTaskDescription" type="submit">Add Task</v-btn>
+            </v-form>
+          </v-card>
+
 
           <DeleteProjectDialog v-if="deleteProjectDialog" v-model="deleteProjectDialog" @changed="$emit('deleted')" />
-        </v-card>
+        
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
@@ -73,12 +74,12 @@ export default {
       return this.data && this.data.tasks ? this.data.tasks.length : 0;
     },
 
-    tasksTodo(){
-        return this.data && this.data.tasks ? this.data.tasks.filter((task) => !task.status) : []; 
+    tasksTodo() {
+      return this.data && this.data.tasks ? this.data.tasks.filter((task) => !task.status) : [];
     },
-    tasksDone(){
-        return this.data && this.data.tasks ? this.data.tasks.filter((task) => task.status) : []; 
-    }
+    tasksDone() {
+      return this.data && this.data.tasks ? this.data.tasks.filter((task) => task.status) : [];
+    },
   },
   methods: {
     async saveProject() {
@@ -123,3 +124,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+.progress{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+</style>
