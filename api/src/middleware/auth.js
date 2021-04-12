@@ -9,7 +9,7 @@ async function authMiddleware(req, res, next) {
     const token = req.headers.authorization.split(' ')[1];
     const payload = await testToken(token);
     if (token && payload) {
-      // inject userId on
+      // inject userId on the request
       req.userId = payload.userId;
       next();
     } else {

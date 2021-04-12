@@ -1,14 +1,14 @@
 <template>
-  <v-list-item :class="{ red: confirmDelete }">
+  <v-list-item :class="{ active: confirmDelete }">
     <!-- Editable task -->
     <template v-if="!isDone">
       <v-list-item-action>
         <v-progress-circular v-if="isLoading" indeterminate color="primary" />
-        <v-checkbox v-else @click="check()" :input-value="data.status" :disabled="data.status"></v-checkbox>
+        <v-checkbox v-else @click="check()" :input-value="data.status" :disabled="data.status || confirmDelete"></v-checkbox>
       </v-list-item-action>
       <v-list-item-content>
         <v-list-item-title>
-          <v-text-field v-model="data.description" @change="updateTask()" placeholder="Untitled task" hide-details dense />
+          <v-text-field v-model="data.description" @change="updateTask()" :disabled="data.status || confirmDelete" placeholder="Untitled task" hide-details dense />
           <v-alert :value="error" type="error" dense>{{error}}</v-alert>
         </v-list-item-title>
       </v-list-item-content>
@@ -16,8 +16,10 @@
         <v-btn @click="confirmDelete = true" icon color="error"><v-icon small>remove_circle</v-icon></v-btn>
       </v-list-item-action>
       <v-list-item-action v-else>
-        <v-btn @click="confirmDelete = false" color="" outlined>Cancel</v-btn>
-        <v-btn @click="deleteTask()" color="" outlined>Remove</v-btn>
+        <v-row>
+          <v-btn @click="confirmDelete = false" color=""  text>Cancel</v-btn>
+          <v-btn @click="deleteTask()" color="error" text>Remove</v-btn>
+        </v-row>
       </v-list-item-action>
     </template>
     <!-- Readonly task -->

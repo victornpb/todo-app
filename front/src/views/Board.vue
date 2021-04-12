@@ -11,9 +11,11 @@
 
         <!-- Projects -->
         <v-row row wrap>
-          <v-flex v-for="project in projects.data" v-bind:key="project._id" xs12 sm12 md6 lg4 xl3 class="pa-2">
-            <Project :value="project"  @deleted="fetchProjects" />
-          </v-flex>
+          <v-layout wrap justify-center>
+            <v-flex v-for="project in projects.data" v-bind:key="project._id" xs12 sm12 md6 lg4 xl3 class="pa-2">
+              <Project :value="project"  @deleted="fetchProjects" />
+            </v-flex>
+          </v-layout>
         </v-row>
         
         <!-- empty state -->

@@ -6,8 +6,6 @@ const JWT_PRIVATE_KEY = String(process.env.JWT_PRIVATE_KEY).replace(/\\n/gm, '\n
 const TOKEN_EXPIRATION = '1d';
 
 
-
-
 module.exports = {
   /**
    * Creates a hash from a plain text password
