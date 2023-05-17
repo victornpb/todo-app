@@ -10,7 +10,7 @@ This is a [mono repository](https://en.wikipedia.org/wiki/Monorepo) containing
 - [Frontend](./front) - A VueJS single page application
 
 ## Requirements
-* Node v12 or later
+* Node v10 or 12
 * Git
 * Docker
 
